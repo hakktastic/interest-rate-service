@@ -11,7 +11,7 @@
 
     <groupId>nl.hakktastic.leaseacarapi</groupId>
     <artifactId>interest-rate-service</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
     <name>interest-rate-service</name>
     <description>Interest Rate Calculation Service for the Lease a Car API</description>
 
