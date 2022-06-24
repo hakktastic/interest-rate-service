@@ -1,7 +1,7 @@
 package nl.hakktastic.leaseacarapi.controller;
 
 import nl.hakktastic.leaseacarapi.entity.InterestRate;
-import nl.hakktastic.leaseacarapi.repository.InterestRateRepository;
+import nl.hakktastic.leaseacarapi.service.InterestRateService;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 
 /**
@@ -23,8 +22,9 @@ import java.util.Optional;
 public class InterestRateController {
 
     private final Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
+
     @Autowired
-    private InterestRateRepository repository;
+    private InterestRateService interestRateService;
 
     /**
      * Get Interest Rate Entity based on the ID.
@@ -35,44 +35,34 @@ public class InterestRateController {
     @GetMapping(path = "/interestrates/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<InterestRate> getInterestById(@PathVariable int id) {
 
-        final ResponseEntity<InterestRate> responseEntity;
-        final Optional<InterestRate> optionalInterestRateEntity = repository.findById(id);
+        logger.info("get interest rate --> starting retrieval of interest rate with id -> {}", id);
 
-        if (optionalInterestRateEntity.isPresent()) {
+        var optionalInterestRate = interestRateService.getInterestById(id);
+        var status = (optionalInterestRate.isPresent()) ? HttpStatus.OK : HttpStatus.NO_CONTENT;
 
-            responseEntity = new ResponseEntity<>(optionalInterestRateEntity.get(), HttpStatus.OK);
+        logger.info("get interest rate --> response code -> {} ({}) - response body -> {} ", status.value(), status.name(), optionalInterestRate.orElseGet(() -> null));
 
-            logger.info("Get Interest Rate by ID --> Response Code -> {} - Response -> {} ", responseEntity.getStatusCodeValue(), responseEntity.getBody());
-
-        } else {
-
-            responseEntity = new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-
-        return responseEntity;
+        return new ResponseEntity<>(optionalInterestRate.orElseGet(() -> null), status);
     }
 
     /**
      * Get interest rate based on start date.
      *
-     * @param startdate start date of interest rate
+     * @param startDate start date of interest rate
      * @return Returns a {@link ResponseEntity} containing a {@link InterestRate} container object
      */
     @GetMapping(path = "/interestrates/startdate/{startdate}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<InterestRate> getInterestRateByStartDate(@PathVariable String startdate) {
+    public ResponseEntity<InterestRate> getInterestRateByStartDate(@PathVariable("startdate") String startDate) {
 
-        final LocalDate date = LocalDate.parse(startdate);
+        logger.info("get interest rate --> starting retrieval of interest rate with start date -> {}", startDate);
 
-        final Optional<InterestRate> optionalInterestRate = repository.findByStartDate(date);
+        var localDatestartDate = LocalDate.parse(startDate);
+        var optionalInterestRate = interestRateService.getInterestByStartDate(localDatestartDate);
+        var status = (optionalInterestRate.isPresent()) ? HttpStatus.OK : HttpStatus.NO_CONTENT;
 
-        if (optionalInterestRate.isPresent()) {
+        logger.info("get interest rate --> response code -> {} ({}) - response body -> {} ", status.value(), status.name(), optionalInterestRate.orElseGet(() -> null));
 
-            return new ResponseEntity<>(optionalInterestRate.get(), HttpStatus.OK);
-
-        } else {
-
-            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
-        }
+        return new ResponseEntity<>(optionalInterestRate.orElseGet(() -> null), status);
     }
 
     /**
@@ -83,16 +73,14 @@ public class InterestRateController {
     @GetMapping(path = "/interestrates", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<InterestRate>> getIterestRates() {
 
-        final List<InterestRate> responseList = repository.findAll();
+        logger.info("get interest rates --> starting retrieval of all interest rates");
 
-        if (responseList != null && !responseList.isEmpty()) {
+        var interestRateEntityList = interestRateService.getAllInterestRates();
+        HttpStatus status = (!interestRateEntityList.isEmpty()) ? HttpStatus.OK : HttpStatus.NO_CONTENT;
 
-            return new ResponseEntity<>(responseList, HttpStatus.OK);
+        logger.info("get interest rates --> response code -> {} ({}) - nr of found interest rates -> {}", status.value(), status.name(), (!(interestRateEntityList.isEmpty()) ? interestRateEntityList.size() : "-"));
 
-        } else {
-
-            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
-        }
+        return new ResponseEntity<>(interestRateEntityList, status);
 
     }
 
