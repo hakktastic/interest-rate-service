@@ -1,8 +1,8 @@
 package nl.hakktastic.leaseacarapi.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import nl.hakktastic.leaseacarapi.entity.InterestRate;
 import nl.hakktastic.leaseacarapi.service.InterestRateService;
-import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -18,10 +18,9 @@ import java.util.List;
 /**
  * Rest Controller for Interest Rate Calculation Service.
  */
+@Slf4j
 @RestController
 public class InterestRateController {
-
-    private final Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private InterestRateService interestRateService;
@@ -35,12 +34,12 @@ public class InterestRateController {
     @GetMapping(path = "/interestrates/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<InterestRate> getInterestById(@PathVariable int id) {
 
-        logger.info("get interest rate --> starting retrieval of interest rate with id -> {}", id);
+        log.info("get interest rate --> starting retrieval of interest rate with id -> {}", id);
 
         var optionalInterestRate = interestRateService.getInterestById(id);
         var status = (optionalInterestRate.isPresent()) ? HttpStatus.OK : HttpStatus.NO_CONTENT;
 
-        logger.info("get interest rate --> response code -> {} ({}) - response body -> {} ", status.value(), status.name(), optionalInterestRate.orElseGet(() -> null));
+        log.info("get interest rate --> response code -> {} ({}) - response body -> {} ", status.value(), status.name(), optionalInterestRate.orElseGet(() -> null));
 
         return new ResponseEntity<>(optionalInterestRate.orElseGet(() -> null), status);
     }
@@ -54,13 +53,13 @@ public class InterestRateController {
     @GetMapping(path = "/interestrates/startdate/{startdate}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<InterestRate> getInterestRateByStartDate(@PathVariable("startdate") String startDate) {
 
-        logger.info("get interest rate --> starting retrieval of interest rate with start date -> {}", startDate);
+        log.info("get interest rate --> starting retrieval of interest rate with start date -> {}", startDate);
 
         var localDatestartDate = LocalDate.parse(startDate);
         var optionalInterestRate = interestRateService.getInterestByStartDate(localDatestartDate);
         var status = (optionalInterestRate.isPresent()) ? HttpStatus.OK : HttpStatus.NO_CONTENT;
 
-        logger.info("get interest rate --> response code -> {} ({}) - response body -> {} ", status.value(), status.name(), optionalInterestRate.orElseGet(() -> null));
+        log.info("get interest rate --> response code -> {} ({}) - response body -> {} ", status.value(), status.name(), optionalInterestRate.orElseGet(() -> null));
 
         return new ResponseEntity<>(optionalInterestRate.orElseGet(() -> null), status);
     }
@@ -73,12 +72,12 @@ public class InterestRateController {
     @GetMapping(path = "/interestrates", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<InterestRate>> getIterestRates() {
 
-        logger.info("get interest rates --> starting retrieval of all interest rates");
+        log.info("get interest rates --> starting retrieval of all interest rates");
 
         var interestRateEntityList = interestRateService.getAllInterestRates();
         HttpStatus status = (!interestRateEntityList.isEmpty()) ? HttpStatus.OK : HttpStatus.NO_CONTENT;
 
-        logger.info("get interest rates --> response code -> {} ({}) - nr of found interest rates -> {}", status.value(), status.name(), (!(interestRateEntityList.isEmpty()) ? interestRateEntityList.size() : "-"));
+        log.info("get interest rates --> response code -> {} ({}) - nr of found interest rates -> {}", status.value(), status.name(), (!(interestRateEntityList.isEmpty()) ? interestRateEntityList.size() : "-"));
 
         return new ResponseEntity<>(interestRateEntityList, status);
 
