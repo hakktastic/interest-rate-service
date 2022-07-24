@@ -27,80 +27,77 @@ import static org.mockito.Mockito.when;
 @WebMvcTest(value = InterestRateController.class)
 public class InterestRateControllerTest {
 
-    @MockBean
-    private InterestRateRepository interestRateRepository;
+  @MockBean private InterestRateRepository interestRateRepository;
 
-    @Autowired
-    private MockMvc mockMvc;
+  @Autowired private MockMvc mockMvc;
 
-    private InterestRate mockInterestRateEntity = new InterestRate(12.15,
-            LocalDate.from(DateTimeFormatter.ofPattern("yyyy-MM-dd").parse("2014-05-01")));
+  private final InterestRate mockInterestRateEntity =
+      new InterestRate(
+          12.15, LocalDate.from(DateTimeFormatter.ofPattern("yyyy-MM-dd").parse("2014-05-01")));
 
-    private String expectedSingleResult =
-            "{\"id\": 1001,\"interestRate\": 12.15,\"startDate\": \"2014-05-01\"}";
+  private final String expectedSingleResult =
+      "{\"id\": 1001,\"interestRate\": 12.15,\"startDate\": \"2014-05-01\"}";
 
-    private String expectedAllResult =
-            "[{\"id\":1001,\"interestRate\":12.15,\"startDate\":\"2014-05-01\"}]";
+  private final String expectedAllResult =
+      "[{\"id\":1001,\"interestRate\":12.15,\"startDate\":\"2014-05-01\"}]";
 
-    @Test
-    public void testGetAllInterestRates() throws Exception {
+  @Test
+  public void testGetAllInterestRates() throws Exception {
 
-        // mock data
-        final List<InterestRate> mockResponseList = new ArrayList<>();
-        mockResponseList.add(mockInterestRateEntity);
+    // mock data
+    final List<InterestRate> mockResponseList = new ArrayList<>();
+    mockResponseList.add(this.mockInterestRateEntity);
 
-        when(interestRateRepository.findAll()).thenReturn(mockResponseList);
+    when(this.interestRateRepository.findAll()).thenReturn(mockResponseList);
 
-        // mock request
-        final RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/interestrates");
-        final MvcResult actualResult = mockMvc.perform(requestBuilder).andReturn();
+    // mock request
+    final RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/interestrates");
+    final MvcResult actualResult = this.mockMvc.perform(requestBuilder).andReturn();
 
-        // Check response
-        JSONAssert.assertEquals(expectedAllResult, actualResult.getResponse().getContentAsString(),
-                false);
+    // Check response
+    JSONAssert.assertEquals(
+            this.expectedAllResult, actualResult.getResponse().getContentAsString(), false);
 
-        // check HTTP response
-        assertTrue(actualResult.getResponse().getStatus() == 200);
-    }
+    // check HTTP response
+    assertTrue(actualResult.getResponse().getStatus() == 200);
+  }
 
-    @Test
-    public void testGetInterestRateById() throws Exception {
+  @Test
+  public void testGetInterestRateById() throws Exception {
 
-        // mock data
-        when(interestRateRepository.findById(1001)).thenReturn(Optional.of(mockInterestRateEntity));
+    // mock data
+    when(this.interestRateRepository.findById(1001)).thenReturn(Optional.of(this.mockInterestRateEntity));
 
-        // mock request
-        final RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/interestrates/1001");
-        final MvcResult actualResult = mockMvc.perform(requestBuilder).andReturn();
+    // mock request
+    final RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/interestrates/1001");
+    final MvcResult actualResult = this.mockMvc.perform(requestBuilder).andReturn();
 
-        // Check response
-        JSONAssert.assertEquals(expectedSingleResult, actualResult.getResponse().getContentAsString(),
-                false);
+    // Check response
+    JSONAssert.assertEquals(
+            this.expectedSingleResult, actualResult.getResponse().getContentAsString(), false);
 
-        // check HTTP response
-        assertTrue(actualResult.getResponse().getStatus() == 200);
+    // check HTTP response
+    assertTrue(actualResult.getResponse().getStatus() == 200);
+  }
 
-    }
+  @Test
+  public void testGetInterestRateByStartDate() throws Exception {
 
-    @Test
-    public void testGetInterestRateByStartDate() throws Exception {
+    // mock data
+    when(this.interestRateRepository.findByStartDate(this.mockInterestRateEntity.getStartDate()))
+        .thenReturn(Optional.of(this.mockInterestRateEntity));
 
-        // mock data
-        when(interestRateRepository.findByStartDate(mockInterestRateEntity.getStartDate()))
-                .thenReturn(Optional.of(mockInterestRateEntity));
+    // mock request
+    final RequestBuilder requestBuilder =
+        MockMvcRequestBuilders.get(
+            "/interestrates/startdate/" + this.mockInterestRateEntity.getStartDate());
+    final MvcResult actualResult = this.mockMvc.perform(requestBuilder).andReturn();
 
-        // mock request
-        final RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/interestrates/startdate/" + mockInterestRateEntity.getStartDate());
-        final MvcResult actualResult = mockMvc.perform(requestBuilder).andReturn();
+    // Check response
+    JSONAssert.assertEquals(
+            this.expectedSingleResult, actualResult.getResponse().getContentAsString(), false);
 
-        // Check response
-        JSONAssert.assertEquals(expectedSingleResult, actualResult.getResponse().getContentAsString(),
-                false);
-
-        // check HTTP response
-        assertTrue(actualResult.getResponse().getStatus() == 200);
-
-    }
-
+    // check HTTP response
+    assertTrue(actualResult.getResponse().getStatus() == 200);
+  }
 }
