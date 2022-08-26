@@ -1,6 +1,9 @@
 package nl.hakktastic.leaseacarapi.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 
 import javax.persistence.Entity;
@@ -13,6 +16,9 @@ import java.time.LocalDate;
 
 /** JPA interest Rate Entity. */
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 public class InterestRate {
 
@@ -24,21 +30,6 @@ public class InterestRate {
   private double interestRate;
 
   @Future private LocalDate startDate;
-
-  /** Default constructor. */
-  public InterestRate() {}
-
-  /**
-   * Constructor with all fields.
-   *
-   * @param interestRate interest rate
-   * @param startDate start date for the interest rate
-   */
-  public InterestRate(double interestRate, LocalDate startDate) {
-
-    this.interestRate = interestRate;
-    this.startDate = startDate;
-  }
 
   @Override
   public boolean equals(Object obj) {
