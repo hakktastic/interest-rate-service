@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import nl.hakktastic.leaseacarapi.entity.InterestRate;
 import nl.hakktastic.leaseacarapi.service.InterestRateService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -55,14 +56,15 @@ public class InterestRateController {
       path = "/interestrates/startdate/{startdate}",
       produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<InterestRate> getInterestRateByStartDate(
-      @PathVariable("startdate") @Valid String startDate) {
+      @PathVariable("startdate") @Valid @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+          String startDate) {
 
     log.info(
         "get interest rate --> starting retrieval of interest rate with start date -> {}",
         startDate);
 
-    var localDatestartDate = LocalDate.parse(startDate);
-    var optionalInterestRate = this.interestRateService.getInterestByStartDate(localDatestartDate);
+    var localDateStartDate = LocalDate.parse(startDate);
+    var optionalInterestRate = this.interestRateService.getInterestByStartDate(localDateStartDate);
     var status = (optionalInterestRate.isPresent()) ? HttpStatus.OK : HttpStatus.NOT_FOUND;
 
     log.info(
