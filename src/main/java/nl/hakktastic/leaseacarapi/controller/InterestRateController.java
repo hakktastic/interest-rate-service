@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -28,7 +29,7 @@ public class InterestRateController {
    * @return Returns {@link InterestRate} Entity
    */
   @GetMapping(path = "/interestrates/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<InterestRate> getInterestById(@PathVariable int id) {
+  public ResponseEntity<InterestRate> getInterestById(@PathVariable @Valid int id) {
 
     log.info("get interest rate --> starting retrieval of interest rate with id -> {}", id);
 
@@ -54,7 +55,7 @@ public class InterestRateController {
       path = "/interestrates/startdate/{startdate}",
       produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<InterestRate> getInterestRateByStartDate(
-      @PathVariable("startdate") String startDate) {
+      @PathVariable("startdate") @Valid String startDate) {
 
     log.info(
         "get interest rate --> starting retrieval of interest rate with start date -> {}",
