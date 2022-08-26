@@ -33,7 +33,7 @@ public class InterestRateController {
     log.info("get interest rate --> starting retrieval of interest rate with id -> {}", id);
 
     var optionalInterestRate = this.interestRateService.getInterestById(id);
-    var status = (optionalInterestRate.isPresent()) ? HttpStatus.OK : HttpStatus.NO_CONTENT;
+    var status = (optionalInterestRate.isPresent()) ? HttpStatus.OK : HttpStatus.NOT_FOUND;
 
     log.info(
         "get interest rate --> response code -> {} ({}) - response body -> {} ",
@@ -62,7 +62,7 @@ public class InterestRateController {
 
     var localDatestartDate = LocalDate.parse(startDate);
     var optionalInterestRate = this.interestRateService.getInterestByStartDate(localDatestartDate);
-    var status = (optionalInterestRate.isPresent()) ? HttpStatus.OK : HttpStatus.NO_CONTENT;
+    var status = (optionalInterestRate.isPresent()) ? HttpStatus.OK : HttpStatus.NOT_FOUND;
 
     log.info(
         "get interest rate --> response code -> {} ({}) - response body -> {} ",
@@ -84,7 +84,7 @@ public class InterestRateController {
     log.info("get interest rates --> starting retrieval of all interest rates");
 
     var interestRateEntityList = this.interestRateService.getAllInterestRates();
-    HttpStatus status = (!interestRateEntityList.isEmpty()) ? HttpStatus.OK : HttpStatus.NO_CONTENT;
+    HttpStatus status = (!interestRateEntityList.isEmpty()) ? HttpStatus.OK : HttpStatus.NOT_FOUND;
 
     log.info(
         "get interest rates --> response code -> {} ({}) - nr of found interest rates -> {}",
