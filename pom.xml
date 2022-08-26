@@ -11,7 +11,7 @@
 
     <groupId>nl.hakktastic.leaseacarapi</groupId>
     <artifactId>interest-rate-service</artifactId>
-    <version>0.4.0</version>
+    <version>0.5.0</version>
     <name>interest-rate-service</name>
     <description>Interest Rate Calculation Service for the Lease a Car API</description>
 
@@ -65,6 +65,11 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
