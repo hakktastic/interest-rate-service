@@ -4,7 +4,7 @@
  */
 @NonNullApi
 @NonNullFields
-package nl.hakktastic.leaseacarapi.controller;
+package nl.hakktastic.leaseacarapi;
 
 import org.springframework.lang.NonNullApi;
 import org.springframework.lang.NonNullFields;
