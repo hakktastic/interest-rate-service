@@ -80,7 +80,7 @@ public class InterestRateController {
    * @return Returns a {@link List} with all the interest rate objects.
    */
   @GetMapping(path = "/interestrates", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<List<InterestRate>> getIterestRates() {
+  public ResponseEntity<List<InterestRate>> getInterestRates() {
 
     log.info("get interest rates --> starting retrieval of all interest rates");
 
