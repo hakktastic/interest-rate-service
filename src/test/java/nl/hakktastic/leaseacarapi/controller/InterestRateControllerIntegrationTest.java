@@ -8,6 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static nl.hakktastic.leaseacarapi.testdata.InterestRateTestData.*;
+import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -32,6 +33,7 @@ public class InterestRateControllerIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
+        .andExpect(jsonPath("$.id").value(INTEREST_RATE_OBJECT_ID_1001))
         .andExpect(jsonPath("$.startDate").value(START_DATE_VALID_EXISTING_2014_05_01.toString()))
         .andExpect(jsonPath("$.interestRate").value(INTEREST_RATE_VALID_10));
   }
@@ -51,7 +53,7 @@ public class InterestRateControllerIntegrationTest {
   }
 
   @Test
-  public void givenInvalidFormatStartDate_whenGetInterestRateByStartDate_thenReturnBadRequest()
+  public void givenInvalidFormatStartDate_whenGetInterestRateByStartDate_thenReturnIsNotFound()
       throws Exception {
 
     mockMvc
@@ -63,17 +65,40 @@ public class InterestRateControllerIntegrationTest {
   }
 
   @Test
-  public void givenNoStartDate_whenGetInterestRateByStartDate_thenReturnBadRequest() {}
+  public void givenExistingId_whenGetInterestRateById_thenReturnInterestRate() throws Exception {
+
+    mockMvc
+        .perform(
+            get(URL_TEMPLATE_INTEREST_RATES + "/{id}", INTEREST_RATE_OBJECT_ID_1001)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.id").value(INTEREST_RATE_OBJECT_ID_1001))
+        .andExpect(jsonPath("$.startDate").value(START_DATE_VALID_EXISTING_2014_05_01.toString()))
+        .andExpect(jsonPath("$.interestRate").value(INTEREST_RATE_VALID_10));
+  }
 
   @Test
-  public void givenTwoInterestRatesExist_whenGetInterestRates_thenReturnTwoInterestRates() {}
+  public void givenNotExistingId_whenGetInterestRateById_thenReturnNotFound() throws Exception {
+
+    mockMvc
+        .perform(
+            get(URL_TEMPLATE_INTEREST_RATES + "/{id}", INTEREST_RATE_OBJECT_ID_INVALID_0)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isNotFound());
+  }
 
   @Test
-  public void givenNoInterestRatesExists_whenGetInterestRates_thenReturnNotFound() {}
+  public void givenInterestRatesExistInRepository_whenGetInterestRates_ThenReturnAllInterestRates()
+      throws Exception {
 
-  @Test
-  public void givenExistingId_whenGetInterestRateById_thenReturnInterestRate() {}
-
-  @Test
-  public void givenNotExistingId_whenGetInterestRateById_thenReturnNotFound() {}
+    mockMvc
+        .perform(
+            get(URL_TEMPLATE_INTEREST_RATES)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.*", hasSize(20)));
+  }
 }
