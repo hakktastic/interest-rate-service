@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.apache.commons.lang3.builder.EqualsBuilder;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -30,23 +29,4 @@ public class InterestRate {
   private double interestRate;
 
   @Future private LocalDate startDate;
-
-  @Override
-  public boolean equals(Object obj) {
-
-    boolean equation = false;
-
-    if (obj instanceof InterestRate) {
-
-      final InterestRate otherEntity = (InterestRate) obj;
-
-      equation =
-          new EqualsBuilder()
-              .appendSuper(super.equals(obj))
-              .append(this.getId(), otherEntity.getId())
-              .isEquals();
-    }
-
-    return equation;
-  }
 }
