@@ -57,14 +57,13 @@ public class InterestRateController {
       produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<InterestRate> getInterestRateByStartDate(
       @PathVariable("startdate") @Valid @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-          String startDate) {
+          LocalDate startDate) {
 
     log.info(
         "get interest rate --> starting retrieval of interest rate with start date -> {}",
         startDate);
 
-    var localDateStartDate = LocalDate.parse(startDate);
-    var optionalInterestRate = this.interestRateService.getInterestByStartDate(localDateStartDate);
+    var optionalInterestRate = this.interestRateService.getInterestByStartDate(startDate);
     var status = (optionalInterestRate.isPresent()) ? HttpStatus.OK : HttpStatus.NOT_FOUND;
 
     log.info(
