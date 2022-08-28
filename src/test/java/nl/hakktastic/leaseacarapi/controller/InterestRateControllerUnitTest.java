@@ -9,6 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -32,7 +33,8 @@ public class InterestRateControllerUnitTest {
         .thenReturn(Optional.ofNullable(INTEREST_RATE_OBJECT_VALID_1001));
 
     var responseEntity =
-        interestRateController.getInterestRateByStartDate(START_DATE_VALID_EXISTING_2014_05_01);
+        interestRateController.getInterestRateByStartDate(
+            LocalDate.parse(START_DATE_VALID_EXISTING_2014_05_01, DateTimeFormatter.ISO_DATE));
 
     assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
     assertThat(responseEntity.getBody()).isEqualTo(INTEREST_RATE_OBJECT_VALID_1001);
@@ -46,7 +48,8 @@ public class InterestRateControllerUnitTest {
         .thenReturn(Optional.empty());
 
     var responseEntity =
-        interestRateController.getInterestRateByStartDate(START_DATE_INVALID_NON_EXISTING);
+        interestRateController.getInterestRateByStartDate(
+            LocalDate.parse(START_DATE_INVALID_NON_EXISTING, DateTimeFormatter.ISO_DATE));
 
     assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     assertThat(responseEntity.getBody()).isNull();
