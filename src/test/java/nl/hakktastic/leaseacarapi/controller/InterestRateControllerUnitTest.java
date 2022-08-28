@@ -8,8 +8,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -28,13 +26,11 @@ public class InterestRateControllerUnitTest {
   @Test
   public void givenExistingStartDate_whenGetInterestRateByStartDate_thenReturnInterestRate() {
 
-    when(interestRateService.getInterestByStartDate(
-            LocalDate.parse(START_DATE_VALID_EXISTING_2014_05_01)))
+    when(interestRateService.getInterestByStartDate(START_DATE_VALID_EXISTING_2014_05_01))
         .thenReturn(Optional.ofNullable(INTEREST_RATE_OBJECT_VALID_1001));
 
     var responseEntity =
-        interestRateController.getInterestRateByStartDate(
-            LocalDate.parse(START_DATE_VALID_EXISTING_2014_05_01, DateTimeFormatter.ISO_DATE));
+        interestRateController.getInterestRateByStartDate(START_DATE_VALID_EXISTING_2014_05_01);
 
     assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
     assertThat(responseEntity.getBody()).isEqualTo(INTEREST_RATE_OBJECT_VALID_1001);
@@ -43,13 +39,11 @@ public class InterestRateControllerUnitTest {
   @Test
   public void givenNonExistingStartDate_whenGetInterestRateByStartDate_thenReturnNotFound() {
 
-    when(interestRateService.getInterestByStartDate(
-            LocalDate.parse(START_DATE_INVALID_NON_EXISTING)))
+    when(interestRateService.getInterestByStartDate(START_DATE_INVALID_NON_EXISTING))
         .thenReturn(Optional.empty());
 
     var responseEntity =
-        interestRateController.getInterestRateByStartDate(
-            LocalDate.parse(START_DATE_INVALID_NON_EXISTING, DateTimeFormatter.ISO_DATE));
+        interestRateController.getInterestRateByStartDate(START_DATE_INVALID_NON_EXISTING);
 
     assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     assertThat(responseEntity.getBody()).isNull();
