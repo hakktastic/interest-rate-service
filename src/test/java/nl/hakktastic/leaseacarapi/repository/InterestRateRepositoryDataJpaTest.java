@@ -8,7 +8,7 @@ import static nl.hakktastic.leaseacarapi.testdata.InterestRateTestData.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
-public class InterestRateRepositoryTest {
+public class InterestRateRepositoryDataJpaTest {
 
   @Autowired InterestRateRepository interestRateRepository;
 
