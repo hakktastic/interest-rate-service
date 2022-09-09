@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import nl.hakktastic.leaseacarapi.entity.InterestRate;
 import nl.hakktastic.leaseacarapi.service.InterestRateService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -28,12 +30,12 @@ public class InterestRateController {
    * @return Returns {@link InterestRate} Entity
    */
   @GetMapping(path = "/interestrates/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<InterestRate> getInterestById(@PathVariable int id) {
+  public ResponseEntity<InterestRate> getInterestById(@PathVariable @Valid int id) {
 
     log.info("get interest rate --> starting retrieval of interest rate with id -> {}", id);
 
     var optionalInterestRate = this.interestRateService.getInterestById(id);
-    var status = (optionalInterestRate.isPresent()) ? HttpStatus.OK : HttpStatus.NO_CONTENT;
+    var status = (optionalInterestRate.isPresent()) ? HttpStatus.OK : HttpStatus.NOT_FOUND;
 
     log.info(
         "get interest rate --> response code -> {} ({}) - response body -> {} ",
@@ -54,15 +56,15 @@ public class InterestRateController {
       path = "/interestrates/startdate/{startdate}",
       produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<InterestRate> getInterestRateByStartDate(
-      @PathVariable("startdate") String startDate) {
+      @PathVariable("startdate") @Valid @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+          LocalDate startDate) {
 
     log.info(
         "get interest rate --> starting retrieval of interest rate with start date -> {}",
         startDate);
 
-    var localDatestartDate = LocalDate.parse(startDate);
-    var optionalInterestRate = this.interestRateService.getInterestByStartDate(localDatestartDate);
-    var status = (optionalInterestRate.isPresent()) ? HttpStatus.OK : HttpStatus.NO_CONTENT;
+    var optionalInterestRate = this.interestRateService.getInterestByStartDate(startDate);
+    var status = (optionalInterestRate.isPresent()) ? HttpStatus.OK : HttpStatus.NOT_FOUND;
 
     log.info(
         "get interest rate --> response code -> {} ({}) - response body -> {} ",
@@ -79,12 +81,12 @@ public class InterestRateController {
    * @return Returns a {@link List} with all the interest rate objects.
    */
   @GetMapping(path = "/interestrates", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<List<InterestRate>> getIterestRates() {
+  public ResponseEntity<List<InterestRate>> getInterestRates() {
 
     log.info("get interest rates --> starting retrieval of all interest rates");
 
     var interestRateEntityList = this.interestRateService.getAllInterestRates();
-    HttpStatus status = (!interestRateEntityList.isEmpty()) ? HttpStatus.OK : HttpStatus.NO_CONTENT;
+    HttpStatus status = (!interestRateEntityList.isEmpty()) ? HttpStatus.OK : HttpStatus.NOT_FOUND;
 
     log.info(
         "get interest rates --> response code -> {} ({}) - nr of found interest rates -> {}",
